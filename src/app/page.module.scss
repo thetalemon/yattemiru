@@ -1,0 +1,36 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  max-width: 800px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #ffd6ae 0%, #fffb93 100%);
+  img {
+    width: 100%;
+    height: auto;
+  }
+  .content {
+    padding: 1rem;
+    h1 {
+      margin-top: 40px;
+      text-align: center;
+    }
+    h2 {
+      margin-top: 40px;
+    }
+    ul {
+      li {
+        margin: 1rem 0 1rem 1rem;
+        a {
+          text-decoration: none;
+          color: #cc8e19;
+          &:hover {
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+  }
+}
