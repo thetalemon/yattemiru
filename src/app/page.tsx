@@ -6,10 +6,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import Image from 'next/image'
 
-export async function getMdData(): Promise<{
-  fullPath: string
-  contentHtml: string
-}> {
+const getMdData = async () => {
   const fullPath = path.join('./src/app/', 'content.md')
   const fileContents = fs.readFileSync(fullPath, 'utf8')
 
