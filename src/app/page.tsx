@@ -1,4 +1,4 @@
-import styles from '../page.module.scss'
+import styles from '@/app/page.module.scss'
 import { remark } from 'remark'
 import html from 'remark-html'
 import Image from 'next/image'
