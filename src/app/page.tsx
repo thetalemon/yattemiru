@@ -1,31 +1,46 @@
-import styles from './page.module.scss'
+import styles from '@/app/page.module.scss'
 import { remark } from 'remark'
 import html from 'remark-html'
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
 import Image from 'next/image'
+import { client } from '@/lib/client'
+import { ElementType } from 'react'
 
-const getMdData = async () => {
-  const fullPath = path.join('./src/app/', 'content.md')
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
+type ContentBlock = {
+  title: string
+  indent: number
+  contents: string
+}
 
-  const matterResult = matter(fileContents)
+type Contents = {
+  title: string
+  contents: ContentBlock[]
+}
 
-  const processedContent = await remark()
-    .use(html)
-    .process(matterResult.content)
+const getContent = async (): Promise<ContentBlock[]> => {
+  const data = await client.get({ endpoint: 'contents' })
+
+  const contentsData = data as Contents
+
+  const mappedData = await Promise.all(
+    contentsData.contents.map(async (item) => {
+      return {
+        ...item,
+        contents: await changeMd2Html(item.contents),
+      }
+    })
+  )
+
+  return mappedData as ContentBlock[]
+}
+
+const changeMd2Html = async (content: string) => {
+  const processedContent = await remark().use(html).process(content)
   const contentHtml = processedContent.toString()
-
-  return {
-    fullPath,
-    contentHtml,
-    ...matterResult.data,
-  }
+  return contentHtml
 }
 
 const Home = async () => {
-  const contentData = await getMdData()
+  const contents = await getContent()
   return (
     <main className={styles.main}>
       <Image
@@ -35,7 +50,20 @@ const Home = async () => {
         alt='Picture of the author'
       />
       <div className={styles.content}>
-        <div dangerouslySetInnerHTML={{ __html: contentData.contentHtml }} />
+        {contents.map((item, index) => {
+          const HeadingTag = `h${item.indent}` as ElementType
+          return (
+            <section key={index}>
+              <HeadingTag>{item.title}</HeadingTag>
+
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: item.contents,
+                }}
+              />
+            </section>
+          )
+        })}
       </div>
     </main>
   )
