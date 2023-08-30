@@ -53,8 +53,15 @@ const Home = async () => {
         {contents.map((item, index) => {
           const HeadingTag = `h${item.indent}` as ElementType
           return (
-            <section key={index}>
-              <HeadingTag>{item.title}</HeadingTag>
+            <section key={index} id={item.title}>
+              <HeadingTag>
+                <a href={`/#${item.title}`}>
+                  <span className={styles.sharp}>
+                    {Array.from({ length: item.indent }, () => '#').join('')}
+                  </span>
+                  {item.title}
+                </a>{' '}
+              </HeadingTag>
 
               <div
                 dangerouslySetInnerHTML={{
